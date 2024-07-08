@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+;l,;l,;l
 
 # Define arrays for mount points and network shares
 MOUNTS=(
