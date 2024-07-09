@@ -3,18 +3,20 @@
 set -e
 
 # Define arrays for mount points and network shares
+MOUNTS_ROOT="/mnt/qnap/"
 MOUNTS=(
-    "/mnt/qnap/movies"
-    "/mnt/qnap/tvshows"
-    "/mnt/qnap/books"
-    "/mnt/qnap/music"
+    "movies"
+    "tvshows"
+    "books"
+    "music"
 )
 
+SHARES_ROOT="//plexd.randrservices.com/PlexData/"
 SHARES=(
-    "//plexd.randrservices.com/PlexData/Movies"
-    "//plexd.randrservices.com/PlexData/TV Shows"
-    "//plexd.randrservices.com/PlexData/Books"
-    "//plexd.randrservices.com/PlexData/iTunes/iTunes Media"
+    "Movies"
+    "TV Shows"
+    "Books"
+    "iTunes/iTunes Media"
 )
 
 
@@ -44,7 +46,7 @@ mount_if_needed() {
 
 # Mount the shares to the specified mount points
 for i in "${!MOUNTS[@]}"; do
-    mount_if_needed "${SHARES[i]}" "${MOUNTS[i]}"
+    mount_if_needed "$SHARES_ROOT${SHARES[i]}" "$MOUNT_ROOT${MOUNTS[i]}"
 done
 
 
@@ -60,23 +62,17 @@ while true; do
     echo "START TIME: ${START_TIME}"
     
     for i in "${!MOUNTS[@]}"; do
-        ls -al "${MOUNTS[i]}"
+        ls -al "$MOUNT_ROOT${MOUNTS[i]}"
+        mv $SHARE_ROOT${SHARES[i]}/* $MOUNTS_ROOT${MOUNTS[i]} || true
+        find $SHARE_ROOT${SHARES[i]} -mindepth 1 -type d -empty -delete
+        
+
     done
 
-    mv /srv/media/movies/* /mnt/qnap/movies || true
-    find /srv/media/movies -mindepth 1 -type d -empty -delete 
-    mv /srv/media/tvshows/* /mnt/qnap/tvshows || true
-    find /srv/media/tvshows -mindepth 1 -type d -empty -delete 
-    mv /srv/media/books/* /mnt/qnap/books || true
-    find /srv/media/books -mindepth 1 -type d -empty -delete 
-    mv /srv/media/music/* /mnt/qnap/tvshows || true
-    find /srv/media/music -mindepth 1 -type d -empty -delete
-
-
     FINISH_TIME=$(date '+%Y-%m-%d %H:%M:%S')
-    # Sleep for ten minutes to avoid excessive CPU usage, then check again
     echo "FINISH TIME: ${FINISH_TIME}" >> "$LOG_FILE"
     echo "FINISH TIME: ${FINISH_TIME}"
-    
+
+    # Sleep to avoid excessive CPU usage, then check again
     sleep 120
 done
