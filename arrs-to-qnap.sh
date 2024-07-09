@@ -64,7 +64,9 @@ while true; do
     done
 
     mv /srv/media/movies/* /mnt/qnap/movies || true
+    find /srv/media/movies -mindepth 1 -type d -empty -delete 
     mv /srv/media/tvshows/* /mnt/qnap/tvshows || true
+    find /srv/media/tvshows -mindepth 1 -type d -empty -delete 
 
     FINISH_TIME=$(date '+%Y-%m-%d %H:%M:%S')
     # Sleep for ten minutes to avoid excessive CPU usage, then check again
