@@ -65,8 +65,6 @@ while true; do
         ls -al "$MOUNT_ROOT${MOUNTS[i]}"
         mv $SHARE_ROOT${SHARES[i]}/* $MOUNTS_ROOT${MOUNTS[i]} || true
         find $SHARE_ROOT${SHARES[i]} -mindepth 1 -type d -empty -delete
-        
-
     done
 
     FINISH_TIME=$(date '+%Y-%m-%d %H:%M:%S')
