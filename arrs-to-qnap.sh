@@ -63,6 +63,9 @@ while true; do
         ls -al "${MOUNTS[i]}"
     done
 
+    mv /srv/media/movies/* /mnt/qnap/movies
+    mv /srv/media/tvshows/* /mnt/qnap/tvshows
+
     FINISH_TIME=$(date '+%Y-%m-%d %H:%M:%S')
     # Sleep for ten minutes to avoid excessive CPU usage, then check again
     echo "FINISH TIME: ${FINISH_TIME}" >> "$LOG_FILE"
