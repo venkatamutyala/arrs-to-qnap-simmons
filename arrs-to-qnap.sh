@@ -5,7 +5,7 @@ set -e
 # Define arrays for mount points and network shares
 MOUNTS_ROOT="/mnt/qnap/"
 MOUNTS=(
-#    "movies"
+    "movies"
     "tvshows"
     "books"
     "music"
@@ -13,7 +13,7 @@ MOUNTS=(
 
 SHARES_ROOT="//plexd.randrservices.com/PlexData/"
 SHARES=(
-#    "Movies"
+    "Movies"
     "TV Shows"
     "Books"
     "iTunes/iTunes Media"
@@ -62,7 +62,7 @@ while true; do
     echo "START TIME: ${START_TIME}"
     
     for i in "${!MOUNTS[@]}"; do
-        ls -al "{$MOUNTS[i]}"
+        # ls -al "{$MOUNTS[i]}"
         mv "$SHARES_ROOT${SHARES[i]}/*" "$MOUNTS_ROOT${MOUNTS[i]}" || true
         find "$SHARES_ROOT${SHARES[i]}" -mindepth 1 -type d -empty -delete
     done
