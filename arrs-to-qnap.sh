@@ -62,9 +62,9 @@ while true; do
     echo "START TIME: ${START_TIME}"
     
     for i in "${!MOUNTS[@]}"; do
-        ls -al "$MOUNTS_ROOT${MOUNTS[i]}"
-        mv $SHARE_ROOT${SHARES[i]}/* $MOUNTS_ROOT${MOUNTS[i]} || true
-        find $SHARE_ROOT${SHARES[i]} -mindepth 1 -type d -empty -delete
+        ls -al "$MOUNTS_ROOT{$MOUNTS[i]}"
+        mv "$SHARES_ROOT${SHARES[i]}/*" "$MOUNTS_ROOT${MOUNTS[i]}" || true
+        find "$SHARES_ROOT${SHARES[i]}" -mindepth 1 -type d -empty -delete
     done
 
     FINISH_TIME=$(date '+%Y-%m-%d %H:%M:%S')
