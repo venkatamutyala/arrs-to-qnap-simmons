@@ -46,7 +46,7 @@ mount_if_needed() {
 
 # Mount the shares to the specified mount points
 for i in "${!MOUNTS[@]}"; do
-    mount_if_needed "$SHARES_ROOT${SHARES[i]}" "$MOUNT_ROOT${MOUNTS[i]}"
+    mount_if_needed "$SHARES_ROOT${SHARES[i]}" "$MOUNTS_ROOT${MOUNTS[i]}"
 done
 
 
