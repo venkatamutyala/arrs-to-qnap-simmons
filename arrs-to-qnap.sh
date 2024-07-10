@@ -5,7 +5,7 @@ set -e
 # Define arrays for mount points and network shares
 MOUNTS_ROOT="/mnt/qnap/"
 MOUNTS=(
-    "movies"
+#    "movies"
     "tvshows"
     "books"
     "music"
@@ -13,7 +13,7 @@ MOUNTS=(
 
 SHARES_ROOT="//plexd.randrservices.com/PlexData/"
 SHARES=(
-    "Movies"
+#    "Movies"
     "TV Shows"
     "Books"
     "iTunes/iTunes Media"
