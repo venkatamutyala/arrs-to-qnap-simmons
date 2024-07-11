@@ -3,7 +3,7 @@
 set -e
 
 # Define arrays for mount points and network shares
-MOUNTS_ROOT="/mnt/qnap/"
+MOUNTS_ROOT="/srv/media/"
 MOUNTS=(
     "movies"
     "tvshows"
@@ -63,6 +63,7 @@ while true; do
     
     for i in "${!MOUNTS[@]}"; do
         echo "***** ${MOUNTS[i]} *****"
+        ls "$MOUNTS_ROOT${MOUNTS[i]}"
         mv "$MOUNTS_ROOT${MOUNTS[i]}"/ "$SHARES_ROOT${SHARES[i]}" || true
         find "$MOUNTS_ROOT${MOUNTS[i]} -mindepth 1 -type d -empty -delete" || true
     done
