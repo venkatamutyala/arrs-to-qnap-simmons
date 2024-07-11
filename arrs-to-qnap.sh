@@ -68,7 +68,7 @@ while true; do
     
     for i in "${!ARRS_FOLDERS[@]}"; do
         echo "***** ${ARRS_FOLDERS[i]} to ${QNAP_FOLDERS[i]} *****"
-        ls "$ARRS_LOCATION${ARRS_FOLDERS[i]}"
+        ls "$ARRS_LOCATION${ARRS_FOLDERS[i]}" || true
         mv "$ARRS_LOCATION${ARRS_FOLDERS[i]} $QNAP_MOUNTS/${QNAP_FOLDERS[i]}" || true
         find "$ARRS_LOCATION${ARRS_FOLDERS[i]} -mindepth 1 -type d -empty -delete" || true
     done
