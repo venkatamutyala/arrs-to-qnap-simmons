@@ -49,6 +49,7 @@ for i in "${!MOUNTS[@]}"; do
     mount_if_needed "$SHARES_ROOT${SHARES[i]}" "$MOUNTS_ROOT${MOUNTS[i]}"
 done
 
+df -h
 
 # Path to store the last run timestamp
 LOG_FILE="log_run.txt"
