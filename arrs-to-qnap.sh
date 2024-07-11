@@ -4,8 +4,8 @@ set -e
 
 # Define arrays for mount points and network shares
 SHARES=(
-    "/srv/media/"
-    "//plexd.randrservices.com/PlexData/"
+    "/srv/media"
+    "//plexd.randrservices.com/PlexData"
 )
 
 MOUNTS=(
@@ -72,9 +72,9 @@ while true; do
     
     for i in "${!ARRS_FOLDERS[@]}"; do
         echo "***** ${ARRS_FOLDERS[i]} *****"
-        ls "$MOUNTS[1]${ARRS_FOLDERS[i]}"
-        mv "$MOUNTS[1]${ARRS_FOLDERS[i]}"/ "$MOUNTS[2]${QNAP_FOLDERS[i]}" || true
-        find "$MOUNTS[1]${ARRS_FOLDERS[i]} -mindepth 1 -type d -empty -delete" || true
+        ls "$MOUNTS[1]/${ARRS_FOLDERS[i]}"
+        mv "$MOUNTS[1]/${ARRS_FOLDERS[i]}"/ "$MOUNTS[2]/${QNAP_FOLDERS[i]}" || true
+        find "$MOUNTS[1]/${ARRS_FOLDERS[i]} -mindepth 1 -type d -empty -delete" || true
     done
 
     FINISH_TIME=$(date '+%Y-%m-%d %H:%M:%S')
