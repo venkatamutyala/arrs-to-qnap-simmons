@@ -10,7 +10,7 @@ MOUNTS=(
     "books"
     "music"
 )
-MOUNTS_ROOT="/mnt/datatomove/"
+MOUNTS_ROOT="/mnt/media/"
 
 SHARES_ROOT="//plexd.randrservices.com/PlexData/"
 SHARES=(
