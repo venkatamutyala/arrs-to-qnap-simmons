@@ -63,7 +63,7 @@ while true; do
     
     for i in "${!MOUNTS[@]}"; do
         echo "***** ${MOUNTS[i]} *****"
-        mv "$SHARES_ROOT${SHARES[i]}/*" "$MOUNTS_ROOT${MOUNTS[i]}" || true
+        mv "$SHARES_ROOT${SHARES[i]}"/* "$MOUNTS_ROOT${MOUNTS[i]}" || true
         find "$SHARES_ROOT${SHARES[i]}" -mindepth 1 -type d -empty -delete
     done
 
