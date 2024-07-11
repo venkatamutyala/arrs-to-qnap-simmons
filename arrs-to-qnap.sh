@@ -3,18 +3,24 @@
 set -e
 
 # Define arrays for mount points and network shares
-MOUNTS_LOCAL="/srv/media/"
-MOUNTS_ROOT="/mnt/media/"
+SHARES=(
+    "/srv/media/"
+    "//plexd.randrservices.com/PlexData/"
+)
+
 MOUNTS=(
+    "/mnt/arrs"
+    "/mnt/qnap"
+)
+
+ARRS_FOLDERS=(
     "movies"
     "tvshows"
     "books"
     "music"
 )
 
-
-SHARES_ROOT="//plexd.randrservices.com/PlexData/"
-SHARES=(
+QNAP_FOLDERS=(
     "Movies"
     "TV Shows"
     "Books"
@@ -48,7 +54,7 @@ mount_if_needed() {
 
 # Mount the shares to the specified mount points
 for i in "${!MOUNTS[@]}"; do
-    mount_if_needed "$MOUNTS_ROOT${MOUNTS[i]}" "$MOUNTS_LOCAL${MOUNTS[i]}"
+    mount_if_needed "${SHARES[i]}" "${MOUNTS[i]}"
 done
 
 df -h
@@ -64,11 +70,11 @@ while true; do
     echo "START TIME: ${START_TIME}" >> "$LOG_FILE"
     echo "START TIME: ${START_TIME}"
     
-    for i in "${!MOUNTS[@]}"; do
-        echo "***** ${MOUNTS[i]} *****"
-        ls "$MOUNTS_ROOT${MOUNTS[i]}"
-        mv "$MOUNTS_ROOT${MOUNTS[i]}"/ "$SHARES_ROOT${SHARES[i]}" || true
-        find "$MOUNTS_ROOT${MOUNTS[i]} -mindepth 1 -type d -empty -delete" || true
+    for i in "${!ARRS_FOLDERS[@]}"; do
+        echo "***** ${ARRS_FOLDERS[i]} *****"
+        ls "$MOUNTS[1]${ARRS_FOLDERS[i]}"
+        mv "$MOUNTS[1]${ARRS_FOLDERS[i]}"/ "$MOUNTS[2]${QNAP_FOLDERS[i]}" || true
+        find "$MOUNTS[1]${ARRS_FOLDERS[i]} -mindepth 1 -type d -empty -delete" || true
     done
 
     FINISH_TIME=$(date '+%Y-%m-%d %H:%M:%S')
