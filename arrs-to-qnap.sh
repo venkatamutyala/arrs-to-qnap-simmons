@@ -47,7 +47,7 @@ mount_if_needed() {
 
 # Mount the shares to the specified mount points
 for i in "${!MOUNTS[@]}"; do
-    mount_if_needed  "$MOUNTS_ROOT${MOUNTS[i]}" "$MOUNTS_LOCAL${MOUNTS[i]}"
+    mount_if_needed "$MOUNTS_LOCAL${MOUNTS[i]}" "$MOUNTS_ROOT${MOUNTS[i]}"
 done
 
 df -h
