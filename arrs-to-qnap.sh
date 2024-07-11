@@ -62,7 +62,7 @@ while true; do
     echo "START TIME: ${START_TIME}"
     
     for i in "${!MOUNTS[@]}"; do
-        # ls -al "{$MOUNTS[i]}"
+        echo "***** ${MOUNTS[i]} *****"
         mv "$SHARES_ROOT${SHARES[i]}/*" "$MOUNTS_ROOT${MOUNTS[i]}" || true
         find "$SHARES_ROOT${SHARES[i]}" -mindepth 1 -type d -empty -delete
     done
