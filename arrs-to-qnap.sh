@@ -23,8 +23,8 @@ ARRS_FOLDERS=(
     "music"
 )
 
-
-
+# Define Trigger file name if there was a file/folder to copy
+TRIGGER_FILE="TRIGGERCOPY.TXT"
 
 # Function to check and mount if not already mounted using findmnt
 mount_if_needed() {
@@ -63,8 +63,8 @@ while true; do
     START_TIME=$(date '+%Y-%m-%d %H:%M:%S')
 
     # Record the current time as the last run time
-    echo -n "START TIME: ${START_TIME} " >> "$LOG_FILE"
-    echo -n "START TIME: ${START_TIME} "
+    echo -n "START: ${START_TIME} " >> "$LOG_FILE"
+    echo -n "START: ${START_TIME} "
     
     for i in "${!ARRS_FOLDERS[@]}"; do
 
@@ -73,9 +73,14 @@ while true; do
         then
             echo
             echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $QNAP_MOUNTS/${QNAP_FOLDERS[i]} ***************"
+            # show the files and folders we will copy
             ls "$ARRS_LOCATION${ARRS_FOLDERS[i]}" || true
+            # rsync the files and folders
             rsync -r -ah --remove-source-files -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$QNAP_MOUNTS/${QNAP_FOLDERS[i]}" || true
+            # erase the folders and files if left over
             find "$ARRS_LOCATION${ARRS_FOLDERS[i]}" -mindepth 1 -type d -empty -delete || true
+            # create trigger file to say we did a copy
+            >$QNAP_MOUNTS/${QNAP_FOLDERS[i]}$TRIGGER_FILE
             echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $QNAP_MOUNTS/${QNAP_FOLDERS[i]} Done ***************"
         else
             echo -n " No files $ARRS_LOCATION${ARRS_FOLDERS[i]} "
@@ -83,8 +88,8 @@ while true; do
     done
 
     FINISH_TIME=$(date '+%Y-%m-%d %H:%M:%S')
-    echo " FINISH TIME: ${FINISH_TIME}" >> "$LOG_FILE"
-    echo " FINISH TIME: ${FINISH_TIME} "
+    echo " FINISH: ${FINISH_TIME}" >> "$LOG_FILE"
+    echo " FINISH: ${FINISH_TIME} "
 
     # Sleep to avoid excessive CPU usage, then check again
     sleep 120
