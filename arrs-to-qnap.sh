@@ -80,7 +80,7 @@ while true; do
             # erase the folders and files if left over
             find "$ARRS_LOCATION${ARRS_FOLDERS[i]}" -mindepth 1 -type d -empty -delete || true
             # create trigger file to say we did a copy
-            echo ${START_TIME} > $QNAP_MOUNTS/${QNAP_FOLDERS[i]}/$TRIGGER_FILE
+            echo "${START_TIME}">"$QNAP_MOUNTS/${QNAP_FOLDERS[i]}/$TRIGGER_FILE"
             echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $QNAP_MOUNTS/${QNAP_FOLDERS[i]} Done ***************"
         else
             echo -n " No files $ARRS_LOCATION${ARRS_FOLDERS[i]} "
