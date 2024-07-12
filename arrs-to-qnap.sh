@@ -67,10 +67,16 @@ while true; do
     echo "START TIME: ${START_TIME}"
     
     for i in "${!ARRS_FOLDERS[@]}"; do
-        echo "***** ${ARRS_FOLDERS[i]} to ${QNAP_FOLDERS[i]} *****"
-        ls "$ARRS_LOCATION${ARRS_FOLDERS[i]}" || true
-        rsync -r -avvh --remove-source-files -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$QNAP_MOUNTS/${QNAP_FOLDERS[i]}" || true
-        find "$ARRS_LOCATION${ARRS_FOLDERS[i]}" -mindepth 1 -type d -empty -delete || true
+
+        # check for files in the folder before doing any steps
+        if [ 'find "$ARRS_LOCATION${ARRS_FOLDERS[i]}" -prune -empty 2>/dev/null'
+            echo "***** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $QNAP_MOUNTS/${QNAP_FOLDERS[i]} *****"
+            ls "$ARRS_LOCATION${ARRS_FOLDERS[i]}" || true
+            rsync -r -avvh --remove-source-files -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$QNAP_MOUNTS/${QNAP_FOLDERS[i]}" || true
+            find "$ARRS_LOCATION${ARRS_FOLDERS[i]}" -mindepth 1 -type d -empty -delete || true
+        else
+            echo "No files $ARRS_LOCATION${ARRS_FOLDERS[i]}"
+        fi
     done
 
     FINISH_TIME=$(date '+%Y-%m-%d %H:%M:%S')
@@ -80,3 +86,11 @@ while true; do
     # Sleep to avoid excessive CPU usage, then check again
     sleep 120
 done
+
+
+if [ `find your/dir -prune -empty 2>/dev/null` ]
+then
+  echo "empty (directory or file)"
+else
+  echo "contains files (or does not exist)"
+fi
