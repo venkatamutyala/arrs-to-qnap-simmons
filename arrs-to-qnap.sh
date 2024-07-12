@@ -69,7 +69,7 @@ while true; do
     for i in "${!ARRS_FOLDERS[@]}"; do
 
         # check for files in the folder before doing any steps
-        if [ 'find "$ARRS_LOCATION${ARRS_FOLDERS[i]}" -prune -empty 2>/dev/null'
+        if [ 'find "$ARRS_LOCATION${ARRS_FOLDERS[i]}" -prune -empty 2>/dev/null' ]
         then
             echo "***** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $QNAP_MOUNTS/${QNAP_FOLDERS[i]} *****"
             ls "$ARRS_LOCATION${ARRS_FOLDERS[i]}" || true
