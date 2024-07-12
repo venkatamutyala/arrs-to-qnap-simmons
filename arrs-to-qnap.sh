@@ -73,7 +73,7 @@ while true; do
         then
             echo "***** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $QNAP_MOUNTS/${QNAP_FOLDERS[i]} *****"
             ls "$ARRS_LOCATION${ARRS_FOLDERS[i]}" || true
-            rsync -r -avvh --remove-source-files -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$QNAP_MOUNTS/${QNAP_FOLDERS[i]}" || true
+            rsync -r -avh --remove-source-files -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$QNAP_MOUNTS/${QNAP_FOLDERS[i]}" || true
             find "$ARRS_LOCATION${ARRS_FOLDERS[i]}" -mindepth 1 -type d -empty -delete || true
         else
             echo "No files $ARRS_LOCATION${ARRS_FOLDERS[i]}"
