@@ -70,6 +70,7 @@ while true; do
 
         # check for files in the folder before doing any steps
         if [ 'find "$ARRS_LOCATION${ARRS_FOLDERS[i]}" -prune -empty 2>/dev/null'
+        then
             echo "***** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $QNAP_MOUNTS/${QNAP_FOLDERS[i]} *****"
             ls "$ARRS_LOCATION${ARRS_FOLDERS[i]}" || true
             rsync -r -avvh --remove-source-files -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$QNAP_MOUNTS/${QNAP_FOLDERS[i]}" || true
@@ -86,11 +87,3 @@ while true; do
     # Sleep to avoid excessive CPU usage, then check again
     sleep 120
 done
-
-
-if [ `find your/dir -prune -empty 2>/dev/null` ]
-then
-  echo "empty (directory or file)"
-else
-  echo "contains files (or does not exist)"
-fi
