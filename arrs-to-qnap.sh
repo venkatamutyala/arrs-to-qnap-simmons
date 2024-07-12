@@ -63,26 +63,28 @@ while true; do
     START_TIME=$(date '+%Y-%m-%d %H:%M:%S')
 
     # Record the current time as the last run time
-    echo "START TIME: ${START_TIME}" >> "$LOG_FILE"
-    echo "START TIME: ${START_TIME}"
+    echo -n "START TIME: ${START_TIME} " >> "$LOG_FILE"
+    echo -n "START TIME: ${START_TIME} "
     
     for i in "${!ARRS_FOLDERS[@]}"; do
 
         # check for files in the folder before doing any steps
         if [ -n "$(ls -A $ARRS_LOCATION${ARRS_FOLDERS[i]} 2>/dev/null)" ]
         then
-            echo "***** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $QNAP_MOUNTS/${QNAP_FOLDERS[i]} *****"
+            echo
+            echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $QNAP_MOUNTS/${QNAP_FOLDERS[i]} ***************"
             ls "$ARRS_LOCATION${ARRS_FOLDERS[i]}" || true
-            rsync -r -avh --remove-source-files -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$QNAP_MOUNTS/${QNAP_FOLDERS[i]}" || true
+            rsync -r -ah --remove-source-files -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$QNAP_MOUNTS/${QNAP_FOLDERS[i]}" || true
             find "$ARRS_LOCATION${ARRS_FOLDERS[i]}" -mindepth 1 -type d -empty -delete || true
+            echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $QNAP_MOUNTS/${QNAP_FOLDERS[i]} Done ***************"
         else
-            echo "No files $ARRS_LOCATION${ARRS_FOLDERS[i]}"
+            echo -n " No files $ARRS_LOCATION${ARRS_FOLDERS[i]} "
         fi
     done
 
     FINISH_TIME=$(date '+%Y-%m-%d %H:%M:%S')
-    echo "FINISH TIME: ${FINISH_TIME}" >> "$LOG_FILE"
-    echo "FINISH TIME: ${FINISH_TIME}"
+    echo " FINISH TIME: ${FINISH_TIME}" >> "$LOG_FILE"
+    echo " FINISH TIME: ${FINISH_TIME} "
 
     # Sleep to avoid excessive CPU usage, then check again
     sleep 120
