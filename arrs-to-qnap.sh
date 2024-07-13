@@ -3,20 +3,28 @@
 set -e
 
 # Define arrays for mount points and network shares
-MOUNTS=(
-    "/mnt/qnap/movies"
-    "/mnt/qnap/tvshows"
-    "/mnt/qnap/books"
-    "/mnt/qnap/music"
+QNAP_SHARES="//plexd.randrservices.com/PlexData"
+
+QNAP_MOUNTS="/mnt/qnap"
+
+QNAP_FOLDERS=(
+    "Movies"
+    "TV Shows"
+    "Books"
+    "iTunes/iTunes Media"
 )
 
-SHARES=(
-    "//plexd.randrservices.com/PlexData/Movies"
-    "//plexd.randrservices.com/PlexData/TV Shows"
-    "//plexd.randrservices.com/PlexData/Books"
-    "//plexd.randrservices.com/PlexData/iTunes/iTunes Media"
+ARRS_LOCATION="/srv/media/"
+
+ARRS_FOLDERS=(
+    "movies"
+    "tvshows"
+    "books"
+    "music"
 )
 
+# Define Trigger file name if there was a file/folder to copy
+TRIGGER_FILE="TRIGGERCOPY.TXT"
 
 # Function to check and mount if not already mounted using findmnt
 mount_if_needed() {
@@ -43,10 +51,9 @@ mount_if_needed() {
 }
 
 # Mount the shares to the specified mount points
-for i in "${!MOUNTS[@]}"; do
-    mount_if_needed "${SHARES[i]}" "${MOUNTS[i]}"
-done
+mount_if_needed "$QNAP_SHARES" "$QNAP_MOUNTS"
 
+df -h
 
 # Path to store the last run timestamp
 LOG_FILE="log_run.txt"
@@ -56,27 +63,34 @@ while true; do
     START_TIME=$(date '+%Y-%m-%d %H:%M:%S')
 
     # Record the current time as the last run time
-    echo "START TIME: ${START_TIME}" >> "$LOG_FILE"
-    echo "START TIME: ${START_TIME}"
+    echo -n "START: ${START_TIME} " >> "$LOG_FILE"
+    echo -n "START: ${START_TIME} "
     
-    for i in "${!MOUNTS[@]}"; do
-        ls -al "${MOUNTS[i]}"
+    for i in "${!ARRS_FOLDERS[@]}"; do
+
+        # check for files in the folder before doing any steps
+        if [ -n "$(ls -A $ARRS_LOCATION${ARRS_FOLDERS[i]} 2>/dev/null)" ]
+        then
+            echo
+            echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $QNAP_MOUNTS/${QNAP_FOLDERS[i]} ***************"
+            # show the files and folders we will copy
+            ls "$ARRS_LOCATION${ARRS_FOLDERS[i]}" || true
+            # rsync the files and folders
+            rsync -r -ah --remove-source-files -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$QNAP_MOUNTS/${QNAP_FOLDERS[i]}" || true
+            # erase the folders and files if left over
+            find "$ARRS_LOCATION${ARRS_FOLDERS[i]}" -mindepth 1 -type d -empty -delete || true
+            # create trigger file to say we did a copy
+            echo "${START_TIME}">"$QNAP_MOUNTS/${QNAP_FOLDERS[i]}/$TRIGGER_FILE"
+            echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $QNAP_MOUNTS/${QNAP_FOLDERS[i]} Done ***************"
+        else
+            echo -n " No files $ARRS_LOCATION${ARRS_FOLDERS[i]} "
+        fi
     done
 
-    mv /srv/media/movies/* /mnt/qnap/movies || true
-    find /srv/media/movies -mindepth 1 -type d -empty -delete 
-    mv /srv/media/tvshows/* /mnt/qnap/tvshows || true
-    find /srv/media/tvshows -mindepth 1 -type d -empty -delete 
-    mv /srv/media/books/* /mnt/qnap/books || true
-    find /srv/media/books -mindepth 1 -type d -empty -delete 
-    mv /srv/media/music/* /mnt/qnap/tvshows || true
-    find /srv/media/music -mindepth 1 -type d -empty -delete
-
-
     FINISH_TIME=$(date '+%Y-%m-%d %H:%M:%S')
-    # Sleep for ten minutes to avoid excessive CPU usage, then check again
-    echo "FINISH TIME: ${FINISH_TIME}" >> "$LOG_FILE"
-    echo "FINISH TIME: ${FINISH_TIME}"
-    
+    echo " FINISH: ${FINISH_TIME}" >> "$LOG_FILE"
+    echo " FINISH: ${FINISH_TIME} "
+
+    # Sleep to avoid excessive CPU usage, then check again
     sleep 120
 done
