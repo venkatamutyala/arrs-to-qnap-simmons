@@ -126,10 +126,10 @@ while true; do
     # Sleep to avoid excessive CPU usage, then check again
     if (($COUNT_SYNCS==0))
     then
+       sleep 480
+    else
         # note no sleep as there may be more to copy
         COUNT_SYNCS=0
-    else
-        sleep 480
     fi
     
 done
