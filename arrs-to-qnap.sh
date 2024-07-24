@@ -76,7 +76,7 @@ mount_if_needed "$QNAP_SHARES" "$QNAP_MOUNTS"
 
 # mount for the backup server
 for i in "${!BACKUP_SHARES[@]}"; do
-    mount-if_needed "${BACKUP_SHARES[i]}" "${BACKUP_MOUNTS[i]}"
+    mount_if_needed "${BACKUP_SHARES[i]}" "${BACKUP_MOUNTS[i]}"
 done
     
 df -h
