@@ -14,6 +14,27 @@ QNAP_FOLDERS=(
     "iTunes/iTunes Media"
 )
 
+BACKUP_SHARES=(
+    "//plexs.randrservices.com/PlexData"
+    "//plexs.randrservices.com/PlexData"
+    "//plexs.randrservices.com/PlexData"
+    "//plexs.randrservices.com/iTunes"
+)
+
+BACKUP_MOUNTS=(
+    "/mnt/backup"
+    "/mnt/backup"
+    "/mnt/backup"
+    "/mnt/backupitunes"
+)
+
+BACKUP_FOLDERS=(
+    "Movies"
+    "TV Shows"
+    "Books"
+    "iTunes/iTunes Media"
+)
+
 ARRS_LOCATION="/srv/media/"
 
 ARRS_FOLDERS=(
@@ -23,8 +44,8 @@ ARRS_FOLDERS=(
     "music"
 )
 
-# Define Trigger file name if there was a file/folder to copy
-TRIGGER_FILE="TRIGGERCOPY.TXT"
+# count the number of syncs in the loop to see how long to sleep
+declare -i COUNT_SYNCS=0
 
 # Function to check and mount if not already mounted using findmnt
 mount_if_needed() {
@@ -53,6 +74,11 @@ mount_if_needed() {
 # Mount the shares to the specified mount points
 mount_if_needed "$QNAP_SHARES" "$QNAP_MOUNTS"
 
+# mount for the backup server
+for i in "${!BACKUP_SHARES[@]}"; do
+    mount-if_needed "${BACKUP_SHARES[i]}" "${BACKUP_MOUNTS[i]}"
+done
+    
 df -h
 
 # Path to store the last run timestamp
@@ -73,18 +99,24 @@ while true; do
         then
             echo
             echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $QNAP_MOUNTS/${QNAP_FOLDERS[i]} ***************"
+            
             # show the files and folders we will copy
             ls "$ARRS_LOCATION${ARRS_FOLDERS[i]}" || true
-            # rsync the files and folders
-            rsync -r -ah --remove-source-files -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$QNAP_MOUNTS/${QNAP_FOLDERS[i]}" || true
+
+            # rsync the files and folders to qnap
+            rsync -r -ah -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$QNAP_MOUNTS/${QNAP_FOLDERS[i]}" || true
+
+            # rsync the files and folders to backup
+            rsync -r -ah -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$BACKUP_MOUNTS[i]/${BACKUP_FOLDERS[i]}" || true
+            
             # erase the folders and files if left over
-            find "$ARRS_LOCATION${ARRS_FOLDERS[i]}" -mindepth 1 -type d -empty -delete || true
-            # create trigger file to say we did a copy
-            echo "${START_TIME}">"$QNAP_MOUNTS/${QNAP_FOLDERS[i]}/$TRIGGER_FILE"
-            echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $QNAP_MOUNTS/${QNAP_FOLDERS[i]} Done ***************"
+            # find "$ARRS_LOCATION${ARRS_FOLDERS[i]}" -mindepth 1 -type d -empty -delete || true
+
+            COUNT_SYNCS=$((COUNT_SYNCS+1))
         else
             echo -n " No files $ARRS_LOCATION${ARRS_FOLDERS[i]} "
         fi
+        
     done
 
     FINISH_TIME=$(date '+%Y-%m-%d %H:%M:%S')
@@ -92,5 +124,11 @@ while true; do
     echo " FINISH: ${FINISH_TIME} "
 
     # Sleep to avoid excessive CPU usage, then check again
-    sleep 120
+    if [[$COUNT_SYNCS -gt 0]] then
+        # note no sleep as there may be more to copy
+        $COUNT_SYNCS=$((0))
+    else
+        sleep 480
+    fi
+    
 done
