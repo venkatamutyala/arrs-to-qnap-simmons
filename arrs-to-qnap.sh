@@ -124,7 +124,7 @@ while true; do
     echo " FINISH: ${FINISH_TIME} "
 
     # Sleep to avoid excessive CPU usage, then check again
-    if [$COUNT_SYNCS==0] then
+    if [$((COUNT_SYNCS))==0] then
         # note no sleep as there may be more to copy
         $COUNT_SYNCS=0
     else
