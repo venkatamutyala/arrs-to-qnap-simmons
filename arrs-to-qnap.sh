@@ -94,7 +94,7 @@ while true; do
             echo
             echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to backup ***************"
 
-            if [ i -gt 2 ]
+            if [ $i -gt 2 ]
             then
                 # rsync the files and folders to backup2
                 rsync -r -ah -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$BACKUP_MOUNTS2/${BACKUP_FOLDERS2}" || true
