@@ -99,9 +99,10 @@ while true; do
                 # rsync the files and folders to backup2
                 rsync -r -ah -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$BACKUP_MOUNTS2/${BACKUP_FOLDERS2}" || true
             else
-            # rsync the files and folders to backup
-            rsync -r -ah -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$BACKUP_MOUNTS/${BACKUP_FOLDERS[i]}" || true
-                
+                # rsync the files and folders to backup
+                rsync -r -ah -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$BACKUP_MOUNTS/${BACKUP_FOLDERS[i]}" || true
+            fi
+            
             # erase the folders and files if left over
             # find "$ARRS_LOCATION${ARRS_FOLDERS[i]}" -mindepth 1 -type d -empty -delete || true
 
@@ -119,7 +120,7 @@ while true; do
     # Sleep to avoid excessive CPU usage, then check again
     if (($COUNT_SYNCS==0))
     then
-       sleep 480
+       sleep 120
     else
         # note no sleep as there may be more to copy
         COUNT_SYNCS=0
