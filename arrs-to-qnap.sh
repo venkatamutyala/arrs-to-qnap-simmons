@@ -106,6 +106,9 @@ while true; do
             # rsync the files and folders to qnap
             rsync -r -ah -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$QNAP_MOUNTS/${QNAP_FOLDERS[i]}" || true
 
+            echo
+            echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $BACKUP_MOUNTS[i]/${BACKUP_FOLDERS[i]} ***************"
+            
             # rsync the files and folders to backup
             rsync -r -ah -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$BACKUP_MOUNTS[i]/${BACKUP_FOLDERS[i]}" || true
             
