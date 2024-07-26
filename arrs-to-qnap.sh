@@ -22,9 +22,7 @@ BACKUP_FOLDERS=(
 
 BACKUP_SHARES2="//plexs.randrservices.com/iTunes"
 BACKUP_MOUNTS2="/mnt/backupitunes"
-BACKUP_FOLDERS2=(
-    "iTunes/iTunes Media"
-)
+BACKUP_FOLDERS2="iTunes/iTunes Media"
 
 ARRS_LOCATION="/srv/media/"
 ARRS_FOLDERS=(
@@ -94,12 +92,16 @@ while true; do
             rsync -r -ah -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$QNAP_MOUNTS/${QNAP_FOLDERS[i]}" || true
 
             echo
-            echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $BACKUP_MOUNTS[i]/${BACKUP_FOLDERS[i]} ***************"
-            echo "*************** $i ***************"
-            
+            echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to backup ***************"
+
+            if [ i -gt 2 ]
+            then
+                # rsync the files and folders to backup2
+                rsync -r -ah -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$BACKUP_MOUNTS2/${BACKUP_FOLDERS2}" || true
+            else
             # rsync the files and folders to backup
-            # rsync -r -ah -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$BACKUP_MOUNTS[i]/${BACKUP_FOLDERS[i]}" || true
-            
+            rsync -r -ah -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$BACKUP_MOUNTS/${BACKUP_FOLDERS[i]}" || true
+                
             # erase the folders and files if left over
             # find "$ARRS_LOCATION${ARRS_FOLDERS[i]}" -mindepth 1 -type d -empty -delete || true
 
