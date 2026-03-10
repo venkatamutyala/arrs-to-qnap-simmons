@@ -10,9 +10,10 @@ RUN apt-get update -y && \
     rm -rf /var/lib/apt/lists/*
 
 
-COPY arrs-to-plex26.sh /usr/local/bin/arrs-to-plex26
+COPY arrs-to-others.sh /usr/local/bin/arrs-to-others
 
-RUN chmod +x /usr/local/bin/arrs-to-plex26
+RUN chmod +x /usr/local/bin/arrs-to-others
 
-CMD ["arrs-to-plex26"]
+CMD ["arrs-to-others"]
+
 
