@@ -10,8 +10,9 @@ RUN apt-get update -y && \
     rm -rf /var/lib/apt/lists/*
 
 
-COPY arrs-to-qnap.sh /usr/local/bin/arrs-to-qnap
+COPY arrs-to-plex26.sh /usr/local/bin/arrs-to-plex26
 
-RUN chmod +x /usr/local/bin/arrs-to-qnap
+RUN chmod +x /usr/local/bin/arrs-to-plex26
 
-CMD ["arrs-to-qnap"]
+CMD ["arrs-to-plex26"]
+

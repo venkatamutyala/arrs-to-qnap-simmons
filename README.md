@@ -1,1 +1,1 @@
-# arrs-to-qnap-simmons
+# arrs-to-plex26-simmons
