@@ -2,25 +2,63 @@
 
 set -e
 
-# Define arrays for mount points and network shares
-NETWORK_SHARE="//plexd.randrservices.com/PlexData"
+# Parse CLI flags
+usage() {
+    echo "Usage: $0 --network-share <share> --network-mount <mountpoint> --arrs-location <path>"
+    echo "  --network-share   The network share path (e.g., //server/share)"
+    echo "  --network-mount   The local mount point (e.g., /mnt/qnap)"
+    echo "  --arrs-location   The local arrs media path (e.g., /srv/media/)"
+    exit 1
+}
 
-NETWORK_MOUNT="/mnt/qnap"
+NETWORK_SHARE=""
+NETWORK_MOUNT=""
+ARRS_LOCATION=""
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --network-share)
+            NETWORK_SHARE="$2"
+            shift 2
+            ;;
+        --network-mount)
+            NETWORK_MOUNT="$2"
+            shift 2
+            ;;
+        --arrs-location)
+            ARRS_LOCATION="$2"
+            shift 2
+            ;;
+        *)
+            echo "Error: Unknown option: $1"
+            usage
+            ;;
+    esac
+done
+
+if [[ -z "$NETWORK_SHARE" ]]; then
+    echo "Error: --network-share is required"
+    usage
+fi
+
+if [[ -z "$NETWORK_MOUNT" ]]; then
+    echo "Error: --network-mount is required"
+    usage
+fi
+
+if [[ -z "$ARRS_LOCATION" ]]; then
+    echo "Error: --arrs-location is required"
+    usage
+fi
 
 NETWORK_FOLDERS=(
     "Movies"
     "TV Shows"
-    "Books"
-    "iTunes/iTunes Media"
 )
-
-ARRS_LOCATION="/srv/media/"
 
 ARRS_FOLDERS=(
     "movies"
     "tvshows"
-    "books"
-    "music"
 )
 
 # Define Trigger file name if there was a file/folder to copy
