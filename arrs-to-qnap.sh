@@ -3,11 +3,11 @@
 set -e
 
 # Define arrays for mount points and network shares
-QNAP_SHARES="//plexd.randrservices.com/PlexData"
+NETWORK_SHARES="//plexd.randrservices.com/PlexData"
 
-QNAP_MOUNTS="/mnt/qnap"
+NETWORK_MOUNTS="/mnt/qnap"
 
-QNAP_FOLDERS=(
+NETWORK_FOLDERS=(
     "Movies"
     "TV Shows"
     "Books"
@@ -51,7 +51,7 @@ mount_if_needed() {
 }
 
 # Mount the shares to the specified mount points
-mount_if_needed "$QNAP_SHARES" "$QNAP_MOUNTS"
+mount_if_needed "$NETWORK_SHARES" "$NETWORK_MOUNTS"
 
 df -h
 
@@ -72,16 +72,16 @@ while true; do
         if [ -n "$(ls -A $ARRS_LOCATION${ARRS_FOLDERS[i]} 2>/dev/null)" ]
         then
             echo
-            echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $QNAP_MOUNTS/${QNAP_FOLDERS[i]} ***************"
+            echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $NETWORK_MOUNTS/${NETWORK_FOLDERS[i]} ***************"
             # show the files and folders we will copy
             ls "$ARRS_LOCATION${ARRS_FOLDERS[i]}" || true
             # rsync the files and folders
-            rsync -r -ah --remove-source-files -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$QNAP_MOUNTS/${QNAP_FOLDERS[i]}" || true
+            rsync -r -ah --remove-source-files -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$NETWORK_MOUNTS/${NETWORK_FOLDERS[i]}" || true
             # erase the folders and files if left over
             find "$ARRS_LOCATION${ARRS_FOLDERS[i]}" -mindepth 1 -type d -empty -delete || true
             # create trigger file to say we did a copy
-            echo "${START_TIME}">"$QNAP_MOUNTS/${QNAP_FOLDERS[i]}/$TRIGGER_FILE"
-            echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $QNAP_MOUNTS/${QNAP_FOLDERS[i]} Done ***************"
+            echo "${START_TIME}">"$NETWORK_MOUNTS/${NETWORK_FOLDERS[i]}/$TRIGGER_FILE"
+            echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $NETWORK_MOUNTS/${NETWORK_FOLDERS[i]} Done ***************"
         else
             echo -n " No files $ARRS_LOCATION${ARRS_FOLDERS[i]} "
         fi
