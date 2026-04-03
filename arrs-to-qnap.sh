@@ -3,9 +3,9 @@
 set -e
 
 # Define arrays for mount points and network shares
-NETWORK_SHARES="//plexd.randrservices.com/PlexData"
+NETWORK_SHARE="//plexd.randrservices.com/PlexData"
 
-NETWORK_MOUNTS="/mnt/qnap"
+NETWORK_MOUNT="/mnt/qnap"
 
 NETWORK_FOLDERS=(
     "Movies"
@@ -51,7 +51,7 @@ mount_if_needed() {
 }
 
 # Mount the shares to the specified mount points
-mount_if_needed "$NETWORK_SHARES" "$NETWORK_MOUNTS"
+mount_if_needed "$NETWORK_SHARE" "$NETWORK_MOUNT"
 
 df -h
 
@@ -72,16 +72,16 @@ while true; do
         if [ -n "$(ls -A $ARRS_LOCATION${ARRS_FOLDERS[i]} 2>/dev/null)" ]
         then
             echo
-            echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $NETWORK_MOUNTS/${NETWORK_FOLDERS[i]} ***************"
+            echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $NETWORK_MOUNT/${NETWORK_FOLDERS[i]} ***************"
             # show the files and folders we will copy
             ls "$ARRS_LOCATION${ARRS_FOLDERS[i]}" || true
             # rsync the files and folders
-            rsync -r -ah --remove-source-files -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$NETWORK_MOUNTS/${NETWORK_FOLDERS[i]}" || true
+            rsync -r -ah --remove-source-files -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$NETWORK_MOUNT/${NETWORK_FOLDERS[i]}" || true
             # erase the folders and files if left over
             find "$ARRS_LOCATION${ARRS_FOLDERS[i]}" -mindepth 1 -type d -empty -delete || true
             # create trigger file to say we did a copy
-            echo "${START_TIME}">"$NETWORK_MOUNTS/${NETWORK_FOLDERS[i]}/$TRIGGER_FILE"
-            echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $NETWORK_MOUNTS/${NETWORK_FOLDERS[i]} Done ***************"
+            echo "${START_TIME}">"$NETWORK_MOUNT/${NETWORK_FOLDERS[i]}/$TRIGGER_FILE"
+            echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $NETWORK_MOUNT/${NETWORK_FOLDERS[i]} Done ***************"
         else
             echo -n " No files $ARRS_LOCATION${ARRS_FOLDERS[i]} "
         fi
