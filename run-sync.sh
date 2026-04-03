@@ -140,5 +140,5 @@ while true; do
     echo " FINISH: ${FINISH_TIME} "
 
     # Sleep to avoid excessive CPU usage, then check again
-    sleep 120
+    sleep 15
 done
