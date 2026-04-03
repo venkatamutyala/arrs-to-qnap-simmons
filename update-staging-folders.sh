@@ -24,5 +24,5 @@ while true; do
   rm -rf /srv/media/staged-area
   log "Media sync complete"
 
-  sleep 120
+  sleep 15
 done
