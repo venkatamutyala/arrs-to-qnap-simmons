@@ -8,8 +8,8 @@ while true; do
   log "Starting media sync"
 
   mkdir -p /srv/media/staged-area
-  mv /srv/media/movies /srv/media/staged-area/
-  mv /srv/media/tvshows /srv/media/staged-area/
+  cp /srv/media/movies /srv/media/staged-area/
+  cp /srv/media/tvshows /srv/media/staged-area/
 
   mkdir -p /srv/media/PLEX26/movies
   mkdir -p /srv/media/PLEX26/tvshows
