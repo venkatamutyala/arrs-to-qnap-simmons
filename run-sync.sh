@@ -4,16 +4,18 @@ set -e
 
 # Parse CLI flags
 usage() {
-    echo "Usage: $0 --network-share <share> --network-mount <mountpoint> --arrs-location <path>"
+    echo "Usage: $0 --network-share <share> --network-mount <mountpoint> --arrs-location <path> [--windows]"
     echo "  --network-share   The network share path (e.g., //server/share)"
     echo "  --network-mount   The local mount point (e.g., /mnt/qnap)"
     echo "  --arrs-location   The local arrs media path (e.g., /srv/media/)"
+    echo "  --windows         Use Windows-compatible SMB mount options (vers=3.0, ntlmssp)"
     exit 1
 }
 
 NETWORK_SHARE=""
 NETWORK_MOUNT=""
 ARRS_LOCATION=""
+WINDOWS_MODE=false
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -28,6 +30,10 @@ while [[ $# -gt 0 ]]; do
         --arrs-location)
             ARRS_LOCATION="$2"
             shift 2
+            ;;
+        --windows)
+            WINDOWS_MODE=true
+            shift
             ;;
         *)
             echo "Error: Unknown option: $1"
@@ -80,7 +86,11 @@ mount_if_needed() {
         echo "$mountpoint is already mounted."
     else
         echo "Attempting to mount $share to $mountpoint"
-        mount.cifs "$share" "$mountpoint" -o user=$SYNC_USERNAME,password=$SYNC_PASSWORD,vers=2.1
+        if [ "$WINDOWS_MODE" = true ]; then
+            mount.cifs "$share" "$mountpoint" -o user=$SYNC_USERNAME,password=$SYNC_PASSWORD,vers=3.0,sec=ntlmssp${SYNC_DOMAIN:+,domain=$SYNC_DOMAIN}
+        else
+            mount.cifs "$share" "$mountpoint" -o user=$SYNC_USERNAME,password=$SYNC_PASSWORD,vers=2.1
+        fi
         if [ $? -ne 0 ]; then
             echo "Failed to mount $share on $mountpoint"
             dmesg | tail -10  # Display the last 10 kernel log messages to help diagnose the issue

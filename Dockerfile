@@ -10,10 +10,9 @@ RUN apt-get update -y && \
     rm -rf /var/lib/apt/lists/*
 
 
-COPY sync-from-staging.sh /usr/local/bin/run-sync
-COPY staging-folders.sh /usr/local/bin/update-staging-folders
-COPY sync-from-staging-windows.sh /usr/local/bin/run-sync-windows
+COPY run-sync.sh /usr/local/bin/run-sync
+COPY update-staging-folders.sh /usr/local/bin/update-staging-folders
 
-RUN chmod +x /usr/local/bin/run-sync /usr/local/bin/update-staging-folders /usr/local/bin/run-sync-windows
+RUN chmod +x /usr/local/bin/run-sync /usr/local/bin/update-staging-folders
 
 
