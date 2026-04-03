@@ -2,25 +2,63 @@
 
 set -e
 
-# Define arrays for mount points and network shares
-QNAP_SHARES="//plexd.randrservices.com/PlexData"
+# Parse CLI flags
+usage() {
+    echo "Usage: $0 --network-share <share> --network-mount <mountpoint> --arrs-location <path>"
+    echo "  --network-share   The network share path (e.g., //server/share)"
+    echo "  --network-mount   The local mount point (e.g., /mnt/qnap)"
+    echo "  --arrs-location   The local arrs media path (e.g., /srv/media/)"
+    exit 1
+}
 
-QNAP_MOUNTS="/mnt/qnap"
+NETWORK_SHARE=""
+NETWORK_MOUNT=""
+ARRS_LOCATION=""
 
-QNAP_FOLDERS=(
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --network-share)
+            NETWORK_SHARE="$2"
+            shift 2
+            ;;
+        --network-mount)
+            NETWORK_MOUNT="$2"
+            shift 2
+            ;;
+        --arrs-location)
+            ARRS_LOCATION="$2"
+            shift 2
+            ;;
+        *)
+            echo "Error: Unknown option: $1"
+            usage
+            ;;
+    esac
+done
+
+if [[ -z "$NETWORK_SHARE" ]]; then
+    echo "Error: --network-share is required"
+    usage
+fi
+
+if [[ -z "$NETWORK_MOUNT" ]]; then
+    echo "Error: --network-mount is required"
+    usage
+fi
+
+if [[ -z "$ARRS_LOCATION" ]]; then
+    echo "Error: --arrs-location is required"
+    usage
+fi
+
+NETWORK_FOLDERS=(
     "Movies"
     "TV Shows"
-    "Books"
-    "iTunes/iTunes Media"
 )
-
-ARRS_LOCATION="/srv/media/"
 
 ARRS_FOLDERS=(
     "movies"
     "tvshows"
-    "books"
-    "music"
 )
 
 # Define Trigger file name if there was a file/folder to copy
@@ -51,7 +89,7 @@ mount_if_needed() {
 }
 
 # Mount the shares to the specified mount points
-mount_if_needed "$QNAP_SHARES" "$QNAP_MOUNTS"
+mount_if_needed "$NETWORK_SHARE" "$NETWORK_MOUNT"
 
 df -h
 
@@ -72,16 +110,16 @@ while true; do
         if [ -n "$(ls -A $ARRS_LOCATION${ARRS_FOLDERS[i]} 2>/dev/null)" ]
         then
             echo
-            echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $QNAP_MOUNTS/${QNAP_FOLDERS[i]} ***************"
+            echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $NETWORK_MOUNT/${NETWORK_FOLDERS[i]} ***************"
             # show the files and folders we will copy
             ls "$ARRS_LOCATION${ARRS_FOLDERS[i]}" || true
             # rsync the files and folders
-            rsync -r -ah --remove-source-files -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$QNAP_MOUNTS/${QNAP_FOLDERS[i]}" || true
+            rsync -r -ah --remove-source-files -P "$ARRS_LOCATION${ARRS_FOLDERS[i]}"/ "$NETWORK_MOUNT/${NETWORK_FOLDERS[i]}" || true
             # erase the folders and files if left over
             find "$ARRS_LOCATION${ARRS_FOLDERS[i]}" -mindepth 1 -type d -empty -delete || true
             # create trigger file to say we did a copy
-            echo "${START_TIME}">"$QNAP_MOUNTS/${QNAP_FOLDERS[i]}/$TRIGGER_FILE"
-            echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $QNAP_MOUNTS/${QNAP_FOLDERS[i]} Done ***************"
+            echo "${START_TIME}">"$NETWORK_MOUNT/${NETWORK_FOLDERS[i]}/$TRIGGER_FILE"
+            echo "*************** $ARRS_LOCATION${ARRS_FOLDERS[i]} to $NETWORK_MOUNT/${NETWORK_FOLDERS[i]} Done ***************"
         else
             echo -n " No files $ARRS_LOCATION${ARRS_FOLDERS[i]} "
         fi
