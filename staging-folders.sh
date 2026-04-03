@@ -7,9 +7,10 @@ log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"; }
 while true; do
   log "Starting media sync"
 
-  mkdir -p /srv/media/staged-area
-  cp /srv/media/movies /srv/media/staged-area/
-  cp /srv/media/tvshows /srv/media/staged-area/
+  mkdir -p /srv/media/staged-area/movies
+  mkdir -p /srv/media/staged-area/tvshows
+  mv /srv/media/movies/* /srv/media/staged-area/movies/
+  mv /srv/media/tvshows/* /srv/media/staged-area/tvshows/
 
   mkdir -p /srv/media/PLEX26/movies
   mkdir -p /srv/media/PLEX26/tvshows
