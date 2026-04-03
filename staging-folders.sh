@@ -9,8 +9,8 @@ while true; do
 
   mkdir -p /srv/media/staged-area/movies
   mkdir -p /srv/media/staged-area/tvshows
-  mv /srv/media/movies/* /srv/media/staged-area/movies/
-  mv /srv/media/tvshows/* /srv/media/staged-area/tvshows/
+  mv /srv/media/movies/* /srv/media/staged-area/movies/ || true
+  mv /srv/media/tvshows/* /srv/media/staged-area/tvshows/ || true
 
   mkdir -p /srv/media/PLEX26/movies
   mkdir -p /srv/media/PLEX26/tvshows
